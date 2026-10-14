@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ezra Portofolio Fisika Online</title>
+    <!-- Fonts & Tailwind CSS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-card {
+            background: rgba(18, 20, 29, 0.65);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .ambient-glow {
+            background: radial-gradient(circle at 50% -20%, rgba(56, 189, 248, 0.12), transparent 70%),
+                        radial-gradient(circle at 80% 60%, rgba(99, 102, 241, 0.08), transparent 50%);
+        }
+    </style>
+</head>
+<body class="bg-[#0b0d13] text-slate-100 font-sans min-h-screen ambient-glow selection:bg-cyan-500/30">
+
+    <div class="max-w-6xl mx-auto px-6 py-12 md:py-16">
+        
+        <!-- HEADER UTAMA -->
+        <header class="text-center mb-16 relative">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-500/30 bg-cyan-500/10 text-cyan-400 text-xs font-mono uppercase tracking-widest mb-4">
+                <span>✦</span> Portofolio Tugas Digital
+            </div>
+            
+            <h1 class="text-4xl md:text-6xl font-serif font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-100 via-slate-200 to-slate-400 mb-4">
+                Ezra Portofolio Fisika Online
+            </h1>
+            
+            <p class="text-slate-400 max-w-2xl mx-auto text-sm md:text-base font-light leading-relaxed">
+                Dokumentasi dan arsip foto penyelesaian tugas-tugas Fisika secara terstruktur.
+            </p>
+
+            <!-- Nama Guru Pengampu -->
+            <div class="mt-6 inline-flex items-center gap-3 px-4 py-2 rounded-xl glass-card text-xs md:text-sm">
+                <span class="text-slate-400">Guru Pengampu:</span>
+                <span id="teacherNameDisplay" class="font-medium text-cyan-300">Nur Inayah S.Pd.</span>
+                <button onclick="editTeacherName()" class="text-slate-500 hover:text-cyan-400 transition-colors ml-1" title="Ubah Nama Guru">
+                    ✏️
+                </button>
+            </div>
+        </header>
+
+        <!-- PENCARIAN -->
+        <div class="flex flex-col md:flex-row gap-4 items-center justify-between mb-10 pb-6 border-b border-slate-800/80">
+            <div class="relative w-full md:w-80">
+                <input type="text" id="searchInput" oninput="renderPhotos()" placeholder="Cari nama file foto..." 
+                    class="w-full bg-[#131622] border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500/50 transition-all font-mono">
+            </div>
+
+            <div class="text-xs font-mono text-slate-400">
+                Total Foto: <span id="totalCount" class="text-cyan-400 font-bold">0</span>
+            </div>
+        </div>
+
+        <!-- GRID GALERI FOTO MURNI (TANPA LABEL TEKS) -->
+        <div id="galleryGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Render via JS -->
+        </div>
+
+    </div>
+
+    <!-- LIGHTBOX MODAL (ZOOM & DOWNLOAD) -->
+    <div id="lightbox" class="fixed inset-0 bg-black/90 backdrop-blur-xl hidden z-50 flex items-center justify-center p-4" onclick="closeLightbox()">
+        <div class="max-w-4xl w-full max-h-[90vh] flex flex-col items-center" onclick="event.stopPropagation()">
+            <img id="lightboxImg" src="" alt="Zoom Foto" class="max-h-[75vh] w-auto object-contain rounded-xl border border-slate-800 mb-6 shadow-2xl">
+            
+            <div class="flex items-center gap-4">
+                <a id="lightboxDownloadBtn" href="#" download class="px-5 py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white font-medium text-xs rounded-xl shadow-lg transition-all flex items-center gap-2">
+                    📥 Download Foto Ini
+                </a>
+                <button onclick="closeLightbox()" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium rounded-xl transition-all">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- JAVASCRIPT -->
+    <script>
+        // =========================================================================
+        // 📌 [GANTI NAMA FILE FOTO DI SINI]
+        // Ketik nama file foto Anda dengan tepat (tanpa spasi, misal: foto1.jpg)
+        // =========================================================================
+        const photoList = [
+            'foto1.jpg',
+            'foto2.jpg',
+            'foto3.jpg',
+            'foto4.jpg',
+            'foto5.jpg',
+            'foto6.jpg',
+            'foto7.jpg',
+            'foto8.jpg',
+            'foto9.jpg',
+            'foto10.jpg',
+            'foto11.jpg',
+            'foto12.jpg',
+            'foto13.jpg',
+            'foto14.jpg',
+            'foto15.jpg',
+            'foto16.jpg',
+            'foto17.jpg',
+            'foto18.jpg',
+            'foto19.jpg',
+        ];
+
+        let teacherName = localStorage.getItem('ezra_teacher_name') || 'Nur Inayah S.Pd.';
+
+        function init() {
+            document.getElementById('teacherNameDisplay').innerText = teacherName;
+            renderPhotos();
+        }
+
+        function renderPhotos() {
+            const grid = document.getElementById('galleryGrid');
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            grid.innerHTML = '';
+
+            const filtered = photoList.filter(filename => filename.toLowerCase().includes(search));
+            document.getElementById('totalCount').innerText = filtered.length;
+
+            filtered.forEach((filename) => {
+                const card = document.createElement('div');
+                card.className = 'glass-card rounded-2xl overflow-hidden hover:border-slate-700 transition-all group flex flex-col';
+                card.innerHTML = `
+                    <div class="relative h-48 overflow-hidden bg-[#0b0d13] flex items-center justify-center cursor-pointer" onclick="openLightbox('${filename}')">
+                        <img src="${filename}" alt="${filename}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                             onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'text-center p-6\'><span class=\'text-2xl block mb-2\'>⚠️</span><span class=\'text-xs font-mono text-amber-400 block mb-1\'>${filename}</span><span class=\'text-[10px] text-slate-500\'>File belum ditemukan di folder.</span></div>';">
+                        
+                        <!-- Overlay Tombol Cepat Zoom -->
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <span class="px-3 py-1.5 bg-white/10 backdrop-blur-md text-white text-xs font-medium rounded-xl border border-white/20 flex items-center gap-1">
+                                🔍 Klik untuk Zoom
+                            </span>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function editTeacherName() {
+            const newName = prompt('Masukkan Nama Guru Pengampu:', teacherName);
+            if (newName) {
+                teacherName = newName;
+                localStorage.setItem('ezra_teacher_name', teacherName);
+                document.getElementById('teacherNameDisplay').innerText = teacherName;
+            }
+        }
+
+        function openLightbox(filename) {
+            document.getElementById('lightboxImg').src = filename;
+            const downloadBtn = document.getElementById('lightboxDownloadBtn');
+            downloadBtn.href = filename;
+            downloadBtn.setAttribute('download', filename);
+            document.getElementById('lightbox').classList.remove('hidden');
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.add('hidden');
+        }
+
+        init();
+    </script>
+</body>
+</html>
